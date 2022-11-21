@@ -17,16 +17,19 @@ socket.on('connect', function() {
     console.log('Connected to the server');
 
     socket.emit('inChat', user, function (resp) {
-        console.log('Users connected', resp);
+        // console.log('Users connected', resp);
+        rederUsers(resp);
     });
 });
 
 socket.on('createMessage', function (message) {
-    console.log('Server', message);
+    // console.log('Server', message);
+    renderMessages(message, false);
+    scrollBottom();
 });
 
 socket.on('peopleList', function (message) {
-    console.log('People', message);
+    rederUsers(message);
 })
 
 // escuchar

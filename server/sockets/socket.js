@@ -17,18 +17,21 @@ io.on('connection', (client) => {
 
         client.join(user.room);
 
-        const people = users.addPerson(client.id, user.name, user.room);
+        users.addPerson(client.id, user.name, user.room);
 
         client.broadcast.to(user.room).emit('peopleList', users.getPeopleByRoom(user.room));
+        client.broadcast.to(user.room).emit('createMessage', createMessage('Admin',`${user.name} is here`));
 
         callback(users.getPeopleByRoom(user.room));
     });
 
-    client.on('createMessage', (data) => {
+    client.on('createMessage', (data, callback) => {
         const person = users.getPerson(client.id);
 
         const msg = createMessage(person.name, data.message);
-        client.broadcast.to(person.room).emit('createMessage', msg)
+        client.broadcast.to(person.room).emit('createMessage', msg);
+
+        callback(msg);
     });
 
     client.on('disconnect', () => {
